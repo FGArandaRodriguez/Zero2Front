@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+/* App.css */
+
+.app-background {
+  background-color: #FAB677; /* Cambia este color por el de tu preferencia */
+  min-height: 100vh;
+  padding: 16px;
+}
+.detalles-orden {
+  background-color: white;
+}
+
+

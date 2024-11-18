@@ -1,24 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
-
+import Cosina from './componentes/cartas/kitchen-order.tsx';
+import Empleado from './componentes/empleados/employee-crud.tsx';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div>
+          <div className="app-background">
+          <Cosina></Cosina>
+          <Empleado></Empleado>
+          </div>
+        </div>
+      </div>
+    
   );
 }
 
