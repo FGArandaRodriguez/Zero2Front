@@ -1,13 +1,14 @@
 import './App.css';
-import Cosina from './componentes/cartas/kitchen-order.tsx';
-import Empleado from './componentes/empleados/employee-crud.tsx';
+import Cocinaorden from './componentes/cartas/kitchen-order';
+import Empleados from './componentes/empleados/employee-crud';
+//import employee
 function App() {
   return (
     <div className="App">
       <div>
           <div className="app-background">
-          <Cosina></Cosina>
-          <Empleado></Empleado>
+          <Cocinaorden></Cocinaorden>
+          <Empleados></Empleados>
           </div>
         </div>
       </div>
