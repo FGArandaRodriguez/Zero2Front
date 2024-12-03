@@ -1,30 +1,12 @@
 'use client'
 import React from 'react'
 import { useEffect, useState } from 'react'
-import { Loader2, CreditCard, DollarSign, Utensils } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/ui/radio-group"
+import router, { useRouter } from 'next/router'
 
 interface Ticket {
   id_ticket: number
@@ -62,46 +44,26 @@ interface MetodoPago {
   nombre: string
 }
 
+interface TicketProps {
+  id_ticket: string; // Asegúrate de que el tipo coincida con el tipo que estás pasando
+}
 
-
-export default function Ticket() {
+export default function Ticket({ id_ticket }: TicketProps) {
   const [order, setOrder] = useState<Ticket | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/tickets?id_ticket=2')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setOrder(data);
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }, []);
-  /*const reqTicket: any[] = [
-    useEffect(() => {
-      fetch('http://localhost:3000/api/ticket?id=2')
+    if (id_ticket) {
+      fetch(`http://localhost:3001/api/tickets?id_ticket=${id_ticket}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          setTicket(data);
+          setOrder(data);
         })
         .catch((err) => {
-          console.log(err.message);
+          console.error('Error al cargar el ticket:', err.message);
         });
-    }, [])
-  ];
-  const [order, setTicket] = useState<Ticket>(reqTicket);
-
-  const [TicketDetails, setTicket] = useState<TicketDetails>({
-    method: 'card',
-    cardNumber: '',
-    cardHolder: '',
-    expirationMonth: '',
-    expirationYear: '',
-    cvv: '',
-    tipPercentage: 15,
-  })*/
+    }
+  }, [id_ticket]);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -110,78 +72,109 @@ export default function Ticket() {
     return <div>Loading...</div>;
   }
   return (
-    <div className="min-h-screen bg-[#FAB677] flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <div className="w-full h-screen bg-cover bg-center">
-            <img src="/assets/taste.png" alt="Taste" className="w-full h-auto bg-red-600" />
+<div className="min-h-screen flex items-center justify-center  p-4">
+  <Card className="w-1/3 max-w-2xlshadow-lg">
+    <CardHeader className="p-4 border-b">
+      <h2 className="text-xl font-bold text-center">TASTE BRINGERS</h2>
+      <p className="text-center text-sm text-gray-500">¡Gracias por tu compra!</p>
+    </CardHeader>
+    <CardContent className="p-4">
+      <div className="space-y-4">
+        {/* Información del establecimiento */}
+        <div>
+          <div className="flex justify-between">
+            <span className="text-sm font-semibold">Ubicación:</span>
+            <span className="text-sm text-right">
+              Carretera Cancún-Aeropuerto, S.M 299-km. 11.5, 77565 Q.R
+            </span>
           </div>
+        </div>
+        <p className="text-center my-5">------------------------------------------</p>
 
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-">
-            <div>
-              <div className="flex justify-between">
-                <span className='text-sm mb-8'>Ubicacion: Carretera Cancun-Aeropuerto, S.M 299-km. 11.5, 77565 Q.R</span>
-              </div>
-              <p className='text-center my-5' >-----------------------------------------------------------------------------------</p>
-
-              <div className="flex justify-between mb-1	">
-                <span className='text-sm font-semibold '>Fecha y Hora:</span>
-                <span className='text-sm'>{order.pedido.fecha}</span>
-              </div>
-
-              <div className="flex justify-between mb-1	">
-                <span className='text-sm font-semibold '>Numero de Pedido:</span>
-                <span className='text-sm'>#{order.pedido.id}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className='text-sm font-semibold '>Metodo de Pago:</span>
-                <span className='text-sm'>{order.metodo_pago.nombre}</span>
-              </div>
-              <p className='text-center my-5' >-----------------------------------------------------------------------------------</p>
-              <h3 className="text-2xl font-bold">Productos</h3>
-              <div className="text-lg font-semibold items-center py-2 ">
-                <span>Cantidad: </span>
-                <span>5 </span>
-              </div>
-
-              {order.pedido.DetallePedido.map((detalle, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b">
-                  <span>
-                    {detalle.Menu.nombre} x {detalle.cantidad}
-                  </span>
-                  <span>${(detalle.Menu.precio * detalle.cantidad).toFixed(2)}</span>
-                </div>
-              ))}
-
-              <div className="flex justify-between items-center py-2 font-semibold border-b">
-                <span>Subtotal</span>
-                <span>
-                  ${order.pedido.DetallePedido.map((detalle, index) => (detalle.subtotal))}
-                </span>
-              </div>
-
-              {/* TODO: adquerir la cantidad de la propina en el back */}
-              <div className="flex justify-between items-center py-2 border-b">
-                <span>Propina</span>
-                <span>$0.00</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Cargo adicional</span>
-              <span>$0.00</span>
-            </div>
-            <p className='text-center my-5' >-----------------------------------------------------------------------------------</p>
-            {/* TODO: adquerir la cantidad total desde el back */}
-            <div className="flex justify-between items-center py-2 text-lg font-bold">
-              <span>Total</span>
-                <span>${order.total.toFixed(2)}</span>
-            </div>
+        {/* Información del pedido */}
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-sm font-semibold">Fecha y Hora:</span>
+            <span className="text-sm">{order.pedido.fecha}</span>
           </div>
-        </CardContent>
-      </Card>
-    </div >
+          <div className="flex justify-between">
+            <span className="text-sm font-semibold">Número de Pedido:</span>
+            <span className="text-sm">#{order.pedido.id}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm font-semibold">Método de Pago:</span>
+            <span className="text-sm">{order.metodo_pago.nombre}</span> 
+            {/*{order.pagos.map((Pago, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center py-2 border-b"
+            >
+              <span>
+                {Pago.Menu.nombre} x {Pago.cantidad}
+              </span>
+              <span>${(Pago.Menu.precio * Pago.cantidad).toFixed(2)}</span>
+            </div>
+          ))}*/}
+          </div>
+        </div>
+        <p className="text-center my-5">------------------------------------------</p>
+
+        {/* Pago de productos */}
+        <div>
+          <h3 className="text-2xl font-bold mb-2">Productos</h3>
+          <div className="flex justify-between text-lg font-semibold py-2 border-b">
+            <span>Cantidad Total:</span>
+            <span>5</span>
+          </div>
+          {order.pedido.DetallePedido.map((detalle, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center py-2 border-b"
+            >
+              <span>
+                {detalle.Menu.nombre} x {detalle.cantidad}
+              </span>
+              <span>${(detalle.Menu.precio * detalle.cantidad).toFixed(2)}</span>
+            </div>
+          ))}
+
+          {/* Totales */}
+          <div className="flex justify-between items-center py-2 font-semibold border-t">
+            <span>Subtotal:</span>
+            <span>
+              $
+              {order.pedido.DetallePedido.reduce(
+                (acc, detalle) => acc + detalle.Menu.precio * detalle.cantidad,
+                0
+              ).toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b">
+            <span>Propina:</span>
+            <span>$0.00</span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b">
+            <span>Cargo adicional:</span>
+            <span>$0.00</span>
+          </div>
+        </div>
+        <p className="text-center my-5">------------------------------------------</p>
+
+        {/* Total final */}
+        <div className="flex justify-between items-center py-4 text-lg font-bold border-t">
+          <span>Total:</span>
+          <span>${order.total.toFixed(2)}</span>
+        </div>
+
+        {/* Mensaje de despedida */}
+        <div className="text-center text-sm text-gray-600">
+          <p>¡Esperamos verte pronto!</p>
+          <p>Para cualquier duda, contáctanos al (998) 3932746.</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+</div>
+
   )
 }
